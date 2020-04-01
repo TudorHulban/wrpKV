@@ -8,12 +8,6 @@ type bstore struct {
 	*badger.DB
 }
 
-// KV is key value for the NoSQL DB.
-type KV struct {
-	key   []byte
-	value []byte
-}
-
 // NewBStore returns a type as per defined store interface.
 func NewBStore(pDBFilePath string, pSyncRights bool) (store, error) {
 	var options badger.Options
