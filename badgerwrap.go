@@ -4,7 +4,9 @@ import (
 	badger "github.com/dgraph-io/badger/v2"
 )
 
-type db badger.DB
+type store struct {
+	*badger.DB
+}
 
 // KV is key value for the NoSQL DB.
 type KV struct {
@@ -12,8 +14,8 @@ type KV struct {
 	value []byte
 }
 
-// NewDB returns a database ready for use.
-func NewDB(pDBFilePath string, pSyncRights bool) (*badger.DB, error) {
+// NewStore returns a database ready for use.
+func NewStore(pDBFilePath string, pSyncRights bool) (*store, error) {
 	var options badger.Options
 
 	if len(pDBFilePath) == 0 {
@@ -22,11 +24,14 @@ func NewDB(pDBFilePath string, pSyncRights bool) (*badger.DB, error) {
 		options = badger.DefaultOptions(pDBFilePath)
 		options.WithSyncWrites(pSyncRights)
 	}
-	return badger.Open(options)
+	result, errOpen := badger.Open(options)
+	return &store{
+		result,
+	}, errOpen
 }
 
-func (db *db) SetKV(pKV KV) error {
-	return db.Update(func(txn *badger.Txn) error {
+func (s store) SetKV(pKV KV) error {
+	return s.Update(func(txn *badger.Txn) error {
 		return txn.Set(pKV.key, pKV.value)
 	})
 }
