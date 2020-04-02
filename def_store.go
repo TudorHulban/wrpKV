@@ -4,6 +4,6 @@ package badgerwrap
 type store interface {
 	Set(pKV KV) error
 	SetTTL(pKV KV, pTTLSecs int) error
-	Get(pKey []byte) ([]byte, error)
+	Get(string, string) ([]byte, error)
 	Close() error
 }
