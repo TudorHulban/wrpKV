@@ -6,9 +6,8 @@ import (
 
 // KV is key value for the NoSQL DB.
 type KV struct {
-	prefix string
-	key    string
-	value  string
+	key   string
+	value string
 }
 
 type bstore struct {

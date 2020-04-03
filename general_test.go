@@ -8,13 +8,15 @@ import (
 )
 
 func Test1Set(t *testing.T) {
+	a := assert.New(t)
+
 	inmemStore, err := NewBStore("", false)
 	defer inmemStore.Close()
 
-	a := assert.New(t)
 	a.Nil(err)
 
-	kv := KV{"prefix", "x", "y"}
+	kPrefix := "prefix-"
+	kv := KV{kPrefix + "x", "y"}
 
 	// test insert
 	errSet := inmemStore.Set(kv)
@@ -25,40 +27,43 @@ func Test1Set(t *testing.T) {
 	errUpdate := inmemStore.Set(kv)
 	a.Nil(errUpdate)
 
-	v, errGet := inmemStore.Get(kv.prefix, kv.key)
+	v, errGet := inmemStore.Get(kv.key)
 	a.Nil(errGet)
 	a.Equal(v, []byte(kv.value))
 }
 
 func Test2Close(t *testing.T) {
+	a := assert.New(t)
+
 	inmemStore, err := NewBStore("", false)
 
-	a := assert.New(t)
 	a.Nil(err)
 
 	errClose := inmemStore.Close()
 	a.Nil(errClose)
 
 	// test insert
-	kv := KV{"prefix", "x", "y"}
+	kv := KV{"prefix-x", "y"}
 	errSet := inmemStore.Set(kv)
 	a.Error(errSet, "")
 }
 
 func Test3TTL(t *testing.T) {
+	a := assert.New(t)
+
 	inmemStore, err := NewBStore("", false)
 	defer inmemStore.Close()
 
-	a := assert.New(t)
 	a.Nil(err)
 
-	kv := KV{"prefix", "x", "y"}
+	kPrefix := "prefix-"
+	kv := KV{kPrefix + "x", "y"}
 	ttl := 1
 
 	errSet := inmemStore.SetTTL(kv, ttl)
 	a.Nil(errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
-	_, errGet := inmemStore.Get(kv.prefix, kv.key)
+	_, errGet := inmemStore.Get(kv.key)
 	a.Error(errGet, "")
 }

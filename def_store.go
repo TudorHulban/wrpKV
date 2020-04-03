@@ -1,9 +1,10 @@
 package badgerwrap
 
-// should be exported
-type store interface {
-	Set(pKV KV) error
-	SetTTL(pKV KV, pTTLSecs int) error
-	Get(string, string) ([]byte, error)
+// Store is interface for interacting with KV stores.
+type Store interface {
+	Set(KV) error
+	SetTTL(KV, int) error
+	Get(string) ([]byte, error)
+	GetPrefix(string) ([]KV, error)
 	Close() error
 }

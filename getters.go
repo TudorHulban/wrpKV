@@ -5,11 +5,11 @@ import (
 )
 
 // GetV fetches key from store.
-func (s bstore) Get(pPrefix, pKey string) ([]byte, error) {
+func (s bstore) Get(pKey string) ([]byte, error) {
 	var result []byte
 
 	errView := s.View(func(txn *badger.Txn) error {
-		item, errGet := txn.Get([]byte(pPrefix + pKey))
+		item, errGet := txn.Get([]byte(pKey))
 		if errGet != nil {
 			return errGet
 		}
@@ -26,31 +26,29 @@ func (s bstore) Get(pPrefix, pKey string) ([]byte, error) {
 // GetPrefix in case it does not find keys, returns first key in store.
 func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
 	var result []KV
-	prefix := []byte(pKeyPrefix)
 
 	errView := s.View(func(txn *badger.Txn) error {
-		iterator := txn.NewIterator(badger.DefaultIteratorOptions)
+		options := badger.DefaultIteratorOptions
+		options.PrefetchSize = 10
+
+		iterator := txn.NewIterator(options)
 		defer iterator.Close()
 
+		prefix := []byte(pKeyPrefix)
 		var errItem error
-		for {
-			iterator.Seek(prefix)
+
+		for iterator.Seek(prefix); iterator.ValidForPrefix(prefix); iterator.Next() {
 			item := iterator.Item()
-			//log.Println("item:", item)
-			//k := item.Key()
+			k := item.Key()
 
-			//log.Println("key:", string(k))
-
-			errItem := item.Value(func(itemVals []byte) error {
-				//log.Printf("key=%s, value=%s\n", k, itemVals)
+			errItem = item.Value(func(itemValue []byte) error {
+				kv := KV{string(k), string(itemValue)}
+				result = append(result, kv)
 				return nil
 			})
-			return errItem
-
-			if !iterator.ValidForPrefix(prefix) {
-				break
+			if errItem != nil {
+				return errItem
 			}
-			iterator.Next()
 		}
 		return errItem
 	})
