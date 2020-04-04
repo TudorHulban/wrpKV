@@ -14,6 +14,6 @@ type KV struct {
 }
 
 type bstore struct {
-	theLogger logger
+	theLogger Customlogger
 	b         *badger.DB
 }

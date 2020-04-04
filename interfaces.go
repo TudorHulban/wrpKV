@@ -1,8 +1,11 @@
 package badgerwrap
 
-// logger is type to be used when injecting external logger.
-type logger interface {
+// Customlogger is type to be used when injecting external logger.
+type Customlogger interface {
+	Infof(string, ...interface{})
+	Info(...interface{})
 	Debugf(string, ...interface{})
+	Debug(...interface{})
 }
 
 // Store is interface for interacting with KV stores.

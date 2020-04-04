@@ -1,45 +1,61 @@
 package badgerwrap
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"os"
-	"sync"
 )
 
 // Custom logger with info and debug. Although not necessary besides l, keeping info for being available. To add log level.
-type customLog struct {
+type CustomLog struct {
 	l         *log.Logger
-	spoolTo   string
+	logLevel  string
 	spoolJSON bool // if we want JSON format
 }
 
-var once sync.Once
+var thelogger CustomLog
+var logLevels = make(map[string]string)
+var delim = ": "
 
-func NewLogger(pAppName, pSpoolTo string, pSpoolJSON bool) (logger, error) {
-	result := new(customLog)
-	var errCreate error
+func NewLogger(level string) (Customlogger, error) {
+	if thelogger.l != nil {
+		return thelogger, nil
+	}
+	logLevels["debug"] = "DEBUG"
+	logLevels["info"] = "INFO"
 
-	once.Do(func() {
-		result, errCreate = createFileLogger(pAppName, pSpoolTo, pSpoolJSON)
-	})
-	return result, errCreate
-}
-
-func createFileLogger(pAppName, pSpoolTo string, pSpoolJSON bool) (*customLog, error) {
-	osFile, errFileOpen := os.OpenFile(pSpoolTo, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
-	if errFileOpen != nil {
-		return nil, errFileOpen
+	_, exists := logLevels[level]
+	if !exists {
+		return nil, errors.New("log level passed is not supported")
 	}
 
-	result := new(customLog)
-	result.l = log.New(osFile, pAppName+" ", log.Llongfile)
-	result.spoolTo = pSpoolTo
-	result.spoolJSON = pSpoolJSON
-
-	return result, nil
+	thelogger = CustomLog{
+		l: log.New(os.Stdout, "", log.LstdFlags|log.Lmicroseconds),
+	}
+	return thelogger, nil
 }
 
 // not using pointer receiver as type contains pointer already.
-func (l customLog) Debugf(format string, args ...interface{}) {
-	l.l.Printf(format, args...)
+func (l CustomLog) Infof(format string, args ...interface{}) {
+	l.l.Output(2, logLevels["info"]+delim+fmt.Sprintf(format, args...))
+}
+
+// not using pointer receiver as type contains pointer already.
+func (l CustomLog) Info(args ...interface{}) {
+	l.l.Output(2, logLevels["info"]+delim+fmt.Sprint(args...))
+}
+
+// not using pointer receiver as type contains pointer already.
+func (l CustomLog) Debugf(format string, args ...interface{}) {
+	if l.logLevel == logLevels["debug"] {
+		l.l.Output(2, logLevels["debug"]+delim+fmt.Sprintf(format, args...))
+	}
+}
+
+// not using pointer receiver as type contains pointer already.
+func (l CustomLog) Debug(args ...interface{}) {
+	if l.logLevel == logLevels["debug"] {
+		l.l.Output(2, logLevels["debug"]+delim+fmt.Sprint(args...))
+	}
 }

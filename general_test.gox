@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const appName = "PACK"
+
 
 func Test1Set(t *testing.T) {
 	a := assert.New(t)
