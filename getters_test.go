@@ -11,7 +11,10 @@ import (
 func Test1ByPrefix(t *testing.T) {
 	a := assert.New(t)
 
-	inmemStore, err := NewBStore("", false)
+	l, errLog := NewLogger(appName, appName+".log", false)
+	a.Nil(errLog)
+
+	inmemStore, err := NewBStore("", false, l)
 	defer inmemStore.Close()
 
 	a.Nil(err)

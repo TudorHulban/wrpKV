@@ -7,10 +7,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const appName = "PACK"
+
 func Test1Set(t *testing.T) {
 	a := assert.New(t)
 
-	inmemStore, err := NewBStore("", false)
+	l, errLog := NewLogger(appName, appName+".log", false)
+	a.Nil(errLog)
+
+	inmemStore, err := NewBStore("", false, l)
 	defer inmemStore.Close()
 
 	a.Nil(err)
@@ -35,7 +40,10 @@ func Test1Set(t *testing.T) {
 func Test2Close(t *testing.T) {
 	a := assert.New(t)
 
-	inmemStore, err := NewBStore("", false)
+	l, errLog := NewLogger(appName, appName+".log", false)
+	a.Nil(errLog)
+
+	inmemStore, err := NewBStore("", false, l)
 
 	a.Nil(err)
 
@@ -51,7 +59,10 @@ func Test2Close(t *testing.T) {
 func Test3TTL(t *testing.T) {
 	a := assert.New(t)
 
-	inmemStore, err := NewBStore("", false)
+	l, errLog := NewLogger(appName, appName+".log", false)
+	a.Nil(errLog)
+
+	inmemStore, err := NewBStore("", false, l)
 	defer inmemStore.Close()
 
 	a.Nil(err)

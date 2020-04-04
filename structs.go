@@ -1,3 +1,6 @@
+/*
+	File contains structs belonging to badger wrap.
+*/
 package badgerwrap
 
 import (
@@ -11,5 +14,6 @@ type KV struct {
 }
 
 type bstore struct {
-	*badger.DB
+	theLogger logger
+	b         *badger.DB
 }

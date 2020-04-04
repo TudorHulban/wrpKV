@@ -8,7 +8,7 @@ import (
 func (s bstore) Get(pKey string) ([]byte, error) {
 	var result []byte
 
-	errView := s.View(func(txn *badger.Txn) error {
+	errView := s.b.View(func(txn *badger.Txn) error {
 		item, errGet := txn.Get([]byte(pKey))
 		if errGet != nil {
 			return errGet
@@ -27,7 +27,7 @@ func (s bstore) Get(pKey string) ([]byte, error) {
 func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
 	var result []KV
 
-	errView := s.View(func(txn *badger.Txn) error {
+	errView := s.b.View(func(txn *badger.Txn) error {
 		options := badger.DefaultIteratorOptions
 		options.PrefetchSize = 10
 
@@ -42,6 +42,9 @@ func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
 			k := item.Key()
 
 			errItem = item.Value(func(itemValue []byte) error {
+
+				s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
+
 				kv := KV{string(k), string(itemValue)}
 				result = append(result, kv)
 				return nil
