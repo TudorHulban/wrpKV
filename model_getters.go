@@ -13,8 +13,8 @@ func (s bstore) Get(pKey string) ([]byte, error) {
 		if errGet != nil {
 			return errGet
 		}
+		s.theLogger.Debugf("size: %s, expires: %s", item.EstimatedSize(), item.ExpiresAt())
 
-		//s.theLogger.Debugf("size: %s, expires: %s", item.EstimatedSize(), item.ExpiresAt())
 		errItem := item.Value(func(itemVals []byte) error {
 			result = append(result, itemVals...)
 			return nil
@@ -43,8 +43,7 @@ func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
 			k := item.Key()
 
 			errItem = item.Value(func(itemValue []byte) error {
-
-				//s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
+				s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
 
 				kv := KV{string(k), string(itemValue)}
 				result = append(result, kv)

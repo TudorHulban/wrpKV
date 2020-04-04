@@ -1,17 +1,16 @@
 package badgerwrap
 
 import (
-	"log"
 	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func xTest1ByPrefix(t *testing.T) {
+func Test1ByPrefix(t *testing.T) {
 	a := assert.New(t)
 
-	l, errLog := NewLogger(appName, appName+".log", false)
+	l, errLog := NewLogger(logLevel)
 	a.Nil(errLog)
 
 	inmemStore, err := NewBStore("", false, l)
@@ -55,6 +54,6 @@ func xTest1ByPrefix(t *testing.T) {
 	a.Equal(len(v), 3)
 
 	for i, v := range v {
-		log.Println(i, v)
+		l.Info(i, v)
 	}
 }

@@ -1,7 +1,7 @@
 package badgerwrap
 
 // Customlogger is type to be used when injecting external logger.
-type Customlogger interface {
+type CustomLogger interface {
 	Infof(string, ...interface{})
 	Info(...interface{})
 	Debugf(string, ...interface{})

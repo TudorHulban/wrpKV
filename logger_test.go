@@ -9,7 +9,7 @@ import (
 func Test1Logger(t *testing.T) {
 	a := assert.New(t)
 
-	l, err := NewLogger("info")
+	l, err := NewLogger(logLevel)
 	a.Nil(err)
 
 	l.Debug(1)
