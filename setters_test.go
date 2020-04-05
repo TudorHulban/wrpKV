@@ -4,13 +4,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TudorHulban/loginfo"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test1Set(t *testing.T) {
 	a := assert.New(t)
 
-	l, errLog := NewLogger(logLevel)
+	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
 	inmemStore, err := NewBStore("", false, l)
@@ -38,7 +39,7 @@ func Test1Set(t *testing.T) {
 func Test2Close(t *testing.T) {
 	a := assert.New(t)
 
-	l, errLog := NewLogger(logLevel)
+	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
 	inmemStore, err := NewBStore("", false, l)
@@ -57,7 +58,7 @@ func Test2Close(t *testing.T) {
 func Test3TTL(t *testing.T) {
 	a := assert.New(t)
 
-	l, errLog := NewLogger(logLevel)
+	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
 	inmemStore, err := NewBStore("", false, l)

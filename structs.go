@@ -4,6 +4,7 @@
 package badgerwrap
 
 import (
+	"github.com/TudorHulban/loginfo"
 	badger "github.com/dgraph-io/badger/v2"
 )
 
@@ -13,7 +14,8 @@ type KV struct {
 	value string
 }
 
+// With injected logger.
 type bstore struct {
-	theLogger CustomLogger
+	theLogger loginfo.LogInfo
 	b         *badger.DB
 }

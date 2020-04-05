@@ -1,13 +1,12 @@
 package badgerwrap
 
 import (
+	"github.com/TudorHulban/loginfo"
 	badger "github.com/dgraph-io/badger/v2"
 )
 
 // NewBStore returns a type as per defined store interface. This way only the contract is exposed.
-func NewBStore(pDBFilePath string, pSyncRights bool, pTheExtLogger CustomLogger) (Store, error) {
-	pTheExtLogger.Info("-----------")
-
+func NewBStore(pDBFilePath string, pSyncRights bool, pTheExtLogger loginfo.LogInfo) (Store, error) {
 	var options badger.Options
 
 	if len(pDBFilePath) == 0 {

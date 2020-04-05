@@ -4,13 +4,14 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/TudorHulban/loginfo"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test1ByPrefix(t *testing.T) {
 	a := assert.New(t)
 
-	l, errLog := NewLogger(logLevel)
+	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
 	inmemStore, err := NewBStore("", false, l)
