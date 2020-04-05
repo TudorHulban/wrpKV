@@ -13,7 +13,7 @@ func (s bstore) Get(pKey string) ([]byte, error) {
 		if errGet != nil {
 			return errGet
 		}
-		s.theLogger.Debugf("size: %s, expires: %s", item.EstimatedSize(), item.ExpiresAt())
+		s.theLogger.Debugf("size: %v, expires: %v", item.EstimatedSize(), item.ExpiresAt())
 
 		errItem := item.Value(func(itemVals []byte) error {
 			result = append(result, itemVals...)
