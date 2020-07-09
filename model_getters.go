@@ -25,7 +25,7 @@ func (s bstore) Get(theK string) ([]byte, error) {
 }
 
 // GetPrefix in case it does not find keys, returns first key in store.
-func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
+func (s bstore) GetPrefix(theKPrefix string) ([]KV, error) {
 	var result []KV
 
 	errView := s.b.View(func(txn *badger.Txn) error {
@@ -35,7 +35,7 @@ func (s bstore) GetPrefix(pKeyPrefix string) ([]KV, error) {
 		iterator := txn.NewIterator(options)
 		defer iterator.Close()
 
-		prefix := []byte(pKeyPrefix)
+		prefix := []byte(theKPrefix)
 		var errItem error
 
 		for iterator.Seek(prefix); iterator.ValidForPrefix(prefix); iterator.Next() {
