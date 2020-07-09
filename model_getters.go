@@ -5,11 +5,11 @@ import (
 )
 
 // GetV fetches key from store.
-func (s bstore) Get(pKey string) ([]byte, error) {
+func (s bstore) Get(theK string) ([]byte, error) {
 	var result []byte
 
 	errView := s.b.View(func(txn *badger.Txn) error {
-		item, errGet := txn.Get([]byte(pKey))
+		item, errGet := txn.Get([]byte(theK))
 		if errGet != nil {
 			return errGet
 		}
