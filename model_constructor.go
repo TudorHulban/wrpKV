@@ -6,19 +6,19 @@ import (
 )
 
 // NewBStore returns a type as per defined store interface. This way only the contract is exposed.
-func NewBStore(pDBFilePath string, pSyncRights bool, pTheExtLogger loginfo.LogInfo) (Store, error) {
+func NewBStore(dbFilePath string, syncRights bool, extLogger loginfo.LogInfo) (Store, error) {
 	var options badger.Options
 
-	if len(pDBFilePath) == 0 {
+	if len(dbFilePath) == 0 {
 		options = badger.DefaultOptions("").WithInMemory(true)
 	} else {
 		options = badger.DefaultOptions(pDBFilePath)
-		options.WithSyncWrites(pSyncRights)
+		options.WithSyncWrites(syncRights)
 	}
 	result, errOpen := badger.Open(options)
 
 	return bstore{
-		theLogger: pTheExtLogger,
+		theLogger: extLogger,
 		b:         result,
 	}, errOpen
 }
