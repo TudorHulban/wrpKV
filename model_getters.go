@@ -4,11 +4,11 @@ import (
 	badger "github.com/dgraph-io/badger/v2"
 )
 
-// GetV fetches key from store.
-func (s bstore) Get(theK string) ([]byte, error) {
+// GetKVByK fetches key from store based on passed value.
+func (s BStore) GetKVByK(theK string) ([]byte, error) {
 	var result []byte
 
-	errView := s.b.View(func(txn *badger.Txn) error {
+	errView := s.TheStore.View(func(txn *badger.Txn) error {
 		item, errGet := txn.Get([]byte(theK))
 		if errGet != nil {
 			return errGet
@@ -24,11 +24,11 @@ func (s bstore) Get(theK string) ([]byte, error) {
 	return result, errView
 }
 
-// GetPrefix in case it does not find keys, returns first key in store.
-func (s bstore) GetPrefix(theKPrefix string) ([]KV, error) {
+// GetKVByPrefix in case it does not find keys, returns first key in store.
+func (s BStore) GetKVByPrefix(theKPrefix string) ([]KV, error) {
 	var result []KV
 
-	errView := s.b.View(func(txn *badger.Txn) error {
+	errView := s.TheStore.View(func(txn *badger.Txn) error {
 		options := badger.DefaultIteratorOptions
 		options.PrefetchSize = 10
 
@@ -45,8 +45,10 @@ func (s bstore) GetPrefix(theKPrefix string) ([]KV, error) {
 			errItem = item.Value(func(itemValue []byte) error {
 				s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
 
-				kv := KV{string(k), string(itemValue)}
-				result = append(result, kv)
+				result = append(result, KV{
+					string(k),
+					string(itemValue),
+				})
 				return nil
 			})
 			if errItem != nil {

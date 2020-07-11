@@ -15,13 +15,13 @@ func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger loginfo.LogInfo) (BSt
 	dbBadger, errOpen := badger.Open(badger.DefaultOptions(dbFilePath))
 	if errOpen != nil {
 		return BStore{
-			TheLogger: extLogger,
+			theLogger: extLogger,
 			TheStore:  nil,
 		}, errOpen
 	}
 
 	return BStore{
-		TheLogger: extLogger,
+		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, errOpen
 }
@@ -36,13 +36,13 @@ func NewBStoreDisk(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error)
 	dbBadger, errOpen := badger.Open(options)
 	if errOpen != nil {
 		return BStore{
-			TheLogger: extLogger,
+			theLogger: extLogger,
 			TheStore:  nil,
 		}, errOpen
 	}
 
 	return BStore{
-		TheLogger: extLogger,
+		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, errOpen
 }
@@ -52,13 +52,13 @@ func NewBStoreInMem(extLogger loginfo.LogInfo) (BStore, error) {
 	dbBadger, errOpen := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if errOpen != nil {
 		return BStore{
-			TheLogger: extLogger,
+			theLogger: extLogger,
 			TheStore:  nil,
 		}, errOpen
 	}
 
 	return BStore{
-		TheLogger: extLogger,
+		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, nil
 }

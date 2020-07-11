@@ -17,6 +17,6 @@ type KV struct {
 
 // BStore Concentrates information defining a KV store.
 type BStore struct {
-	TheLogger loginfo.LogInfo
+	theLogger loginfo.LogInfo // logger needed only for package logging
 	TheStore  *badger.DB
 }

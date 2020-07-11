@@ -14,7 +14,7 @@ func Test1Set(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
-	inmemStore, err := NewBStore("", false, l)
+	inmemStore, err := NewBStoreInMem(l)
 	defer inmemStore.Close()
 
 	a.Nil(err)
@@ -31,7 +31,7 @@ func Test1Set(t *testing.T) {
 	errUpdate := inmemStore.Set(kv)
 	a.Nil(errUpdate)
 
-	v, errGet := inmemStore.Get(kv.key)
+	v, errGet := inmemStore.GetKVByK(kv.key)
 	a.Nil(errGet)
 	a.Equal(v, []byte(kv.value))
 }
@@ -42,7 +42,7 @@ func Test2Close(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
-	inmemStore, err := NewBStore("", false, l)
+	inmemStore, err := NewBStoreInMem(l)
 
 	a.Nil(err)
 
@@ -61,7 +61,7 @@ func Test3TTL(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
-	inmemStore, err := NewBStore("", false, l)
+	inmemStore, err := NewBStoreInMem(l)
 	defer inmemStore.Close()
 
 	a.Nil(err)
@@ -70,10 +70,10 @@ func Test3TTL(t *testing.T) {
 	kv := KV{kPrefix + "x", "y"}
 	ttl := 1
 
-	errSet := inmemStore.SetTTL(kv, ttl)
+	errSet := inmemStore.SetTTL(kv, uint8(ttl))
 	a.Nil(errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
-	_, errGet := inmemStore.Get(kv.key)
+	_, errGet := inmemStore.GetKVByK(kv.key)
 	a.Error(errGet, "")
 }

@@ -14,7 +14,7 @@ func Test1ByPrefix(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	a.Nil(errLog)
 
-	inmemStore, err := NewBStore("", false, l)
+	inmemStore, err := NewBStoreInMem(l)
 	defer inmemStore.Close()
 
 	a.Nil(err)
@@ -50,7 +50,7 @@ func Test1ByPrefix(t *testing.T) {
 
 	wg.Wait()
 
-	v, errGet := inmemStore.GetPrefix(kPrefix)
+	v, errGet := inmemStore.GetKVByPrefix(kPrefix)
 	a.Nil(errGet)
 	a.Equal(len(v), 3)
 
