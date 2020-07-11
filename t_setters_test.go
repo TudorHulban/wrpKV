@@ -1,6 +1,7 @@
 package badgerwrap
 
 import (
+	"strconv"
 	"testing"
 	"time"
 
@@ -67,4 +68,21 @@ func Test3TTL(t *testing.T) {
 	time.Sleep(time.Duration(ttl+1) * time.Second)
 	_, errGet := inmemStore.GetKVByK(kv.key)
 	assert.Error(t, errGet)
+}
+
+// BenchmarkSet-4   	   11239	     91726 ns/op	   22480 B/op	      59 allocs/op
+func BenchmarkSet(b *testing.B) {
+	l, _ := loginfo.New(0) // no logging
+
+	inmemStore, _ := NewBStoreInMemNoLogging(l)
+	defer func() {
+		inmemStore.Close()
+	}()
+
+	for i := 0; i < b.N; i++ {
+		inmemStore.Set(KV{
+			[]byte(strconv.Itoa(i)),
+			[]byte("x"),
+		})
+	}
 }

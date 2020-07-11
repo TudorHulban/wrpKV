@@ -62,6 +62,24 @@ func NewBStoreInMem(extLogger loginfo.LogInfo) (BStore, error) {
 	}, nil
 }
 
+// NewBStoreInMemNoLogging Creates in memory Badger DB.
+func NewBStoreInMemNoLogging(extLogger loginfo.LogInfo) (BStore, error) {
+	options := badger.DefaultOptions("").WithInMemory(true).WithLogger(nil)
+
+	dbBadger, errOpen := badger.Open(options)
+	if errOpen != nil {
+		return BStore{
+			theLogger: extLogger,
+			TheStore:  nil,
+		}, errOpen
+	}
+
+	return BStore{
+		theLogger: extLogger,
+		TheStore:  dbBadger,
+	}, nil
+}
+
 // Close closes the store.
 func (s BStore) Close() error {
 	return s.TheStore.Close()
