@@ -1,29 +1,69 @@
 package badgerwrap
 
+/*
+File contains constructors for model.
+Different constructors for disk sync options were written for better usability.
+*/
+
 import (
 	"github.com/TudorHulban/loginfo"
 	badger "github.com/dgraph-io/badger/v2"
 )
 
-// NewBStore returns a type as per defined store interface. This way only the contract is exposed.
-func NewBStore(dbFilePath string, syncRights bool, extLogger loginfo.LogInfo) (Store, error) {
-	var options badger.Options
-
-	if len(dbFilePath) == 0 {
-		options = badger.DefaultOptions("").WithInMemory(true)
-	} else {
-		options = badger.DefaultOptions(pDBFilePath)
-		options.WithSyncWrites(syncRights)
+// NewBStoreDiskWSyncWrites returns a type containing a store that satisfies store interface.
+func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error) {
+	dbBadger, errOpen := badger.Open(badger.DefaultOptions(dbFilePath))
+	if errOpen != nil {
+		return BStore{
+			TheLogger: extLogger,
+			TheStore:  nil,
+		}, errOpen
 	}
-	result, errOpen := badger.Open(options)
 
-	return bstore{
-		theLogger: extLogger,
-		b:         result,
+	return BStore{
+		TheLogger: extLogger,
+		TheStore:  dbBadger,
 	}, errOpen
 }
 
+// NewBStoreDisk returns a type containing a store that satisfies store interface.
+// No sync writes.
+func NewBStoreDisk(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error) {
+	var options badger.Options
+	options = badger.DefaultOptions(dbFilePath)
+	options.WithSyncWrites(false)
+
+	dbBadger, errOpen := badger.Open(options)
+	if errOpen != nil {
+		return BStore{
+			TheLogger: extLogger,
+			TheStore:  nil,
+		}, errOpen
+	}
+
+	return BStore{
+		TheLogger: extLogger,
+		TheStore:  dbBadger,
+	}, errOpen
+}
+
+// NewBStoreInMem Creates in memory Badger DB.
+func NewBStoreInMem(extLogger loginfo.LogInfo) (BStore, error) {
+	dbBadger, errOpen := badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	if errOpen != nil {
+		return BStore{
+			TheLogger: extLogger,
+			TheStore:  nil,
+		}, errOpen
+	}
+
+	return BStore{
+		TheLogger: extLogger,
+		TheStore:  dbBadger,
+	}, nil
+}
+
 // Close closes the store.
-func (s bstore) Close() error {
-	return s.b.Close()
+func (s BStore) Close() error {
+	return s.TheStore.Close()
 }

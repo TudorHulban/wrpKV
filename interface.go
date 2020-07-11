@@ -6,5 +6,6 @@ type Store interface {
 	SetTTL(KV, int) error
 	Get(string) ([]byte, error)
 	GetPrefix(string) ([]KV, error)
+	// Close closes the opened KV store.
 	Close() error
 }

@@ -1,7 +1,8 @@
+package badgerwrap
+
 /*
 	File contains structs belonging to badger wrap.
 */
-package badgerwrap
 
 import (
 	"github.com/TudorHulban/loginfo"
@@ -14,8 +15,8 @@ type KV struct {
 	value string
 }
 
-// With injected logger.
-type bstore struct {
-	theLogger loginfo.LogInfo
-	b         *badger.DB
+// BStore Concentrates information defining a KV store.
+type BStore struct {
+	TheLogger loginfo.LogInfo
+	TheStore  *badger.DB
 }
