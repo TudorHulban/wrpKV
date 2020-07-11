@@ -29,8 +29,7 @@ func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger loginfo.LogInfo) (BSt
 // NewBStoreDisk returns a type containing a store that satisfies store interface.
 // No sync writes.
 func NewBStoreDisk(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error) {
-	var options badger.Options
-	options = badger.DefaultOptions(dbFilePath)
+	options := badger.DefaultOptions(dbFilePath)
 	options.WithSyncWrites(false)
 
 	dbBadger, errOpen := badger.Open(options)

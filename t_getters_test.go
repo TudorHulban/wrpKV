@@ -9,15 +9,14 @@ import (
 )
 
 func Test1ByPrefix(t *testing.T) {
-	a := assert.New(t)
-
 	l, errLog := loginfo.New(2)
-	a.Nil(errLog)
+	assert.Nil(t, errLog)
 
 	inmemStore, err := NewBStoreInMem(l)
-	defer inmemStore.Close()
-
-	a.Nil(err)
+	assert.Nil(t, err)
+	defer func() {
+		assert.Nil(t, inmemStore.Close())
+	}()
 
 	kPrefix := "prefix-"
 	var wg sync.WaitGroup
@@ -27,7 +26,7 @@ func Test1ByPrefix(t *testing.T) {
 	go func() {
 		kv1 := KV{kPrefix + "x1", "y1"}
 		errSet := inmemStore.Set(kv1)
-		a.Nil(errSet)
+		assert.Nil(t, errSet)
 
 		wg.Done()
 	}()
@@ -35,7 +34,7 @@ func Test1ByPrefix(t *testing.T) {
 	go func() {
 		kv2 := KV{kPrefix + "x2", "y2"}
 		errSet := inmemStore.Set(kv2)
-		a.Nil(errSet)
+		assert.Nil(t, errSet)
 
 		wg.Done()
 	}()
@@ -43,7 +42,7 @@ func Test1ByPrefix(t *testing.T) {
 	go func() {
 		kv3 := KV{kPrefix + "x3", "y3"}
 		errSet := inmemStore.Set(kv3)
-		a.Nil(errSet)
+		assert.Nil(t, errSet)
 
 		wg.Done()
 	}()
@@ -51,8 +50,8 @@ func Test1ByPrefix(t *testing.T) {
 	wg.Wait()
 
 	v, errGet := inmemStore.GetKVByPrefix(kPrefix)
-	a.Nil(errGet)
-	a.Equal(len(v), 3)
+	assert.Nil(t, errGet)
+	assert.Equal(t, len(v), 3)
 
 	for i, v := range v {
 		l.Info(i, v)

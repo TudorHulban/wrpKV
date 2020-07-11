@@ -9,71 +9,62 @@ import (
 )
 
 func Test1Set(t *testing.T) {
-	a := assert.New(t)
-
 	l, errLog := loginfo.New(2)
-	a.Nil(errLog)
+	assert.Nil(t, errLog)
 
 	inmemStore, err := NewBStoreInMem(l)
-	defer inmemStore.Close()
-
-	a.Nil(err)
+	assert.Nil(t, err)
+	defer func() {
+		assert.Nil(t, inmemStore.Close())
+	}()
 
 	kPrefix := "prefix-"
 	kv := KV{kPrefix + "x", "y"}
 
 	// test insert
-	errSet := inmemStore.Set(kv)
-	a.Nil(errSet)
+	assert.Nil(t, inmemStore.Set(kv))
 
 	// test update
 	kv.value = "z"
-	errUpdate := inmemStore.Set(kv)
-	a.Nil(errUpdate)
+	assert.Nil(t, inmemStore.Set(kv))
 
 	v, errGet := inmemStore.GetKVByK(kv.key)
-	a.Nil(errGet)
-	a.Equal(v, []byte(kv.value))
+	assert.Nil(t, errGet)
+	assert.Equal(t, v, []byte(kv.value))
 }
 
 func Test2Close(t *testing.T) {
-	a := assert.New(t)
-
 	l, errLog := loginfo.New(2)
-	a.Nil(errLog)
+	assert.Nil(t, errLog)
 
 	inmemStore, err := NewBStoreInMem(l)
+	assert.Nil(t, err)
+	assert.Nil(t, inmemStore.Close())
 
-	a.Nil(err)
-
-	errClose := inmemStore.Close()
-	a.Nil(errClose)
-
-	// test insert
-	kv := KV{"prefix-x", "y"}
+	// test insert on closed store.
+	kv := KV{"x", "y"}
 	errSet := inmemStore.Set(kv)
-	a.Error(errSet, "")
+	assert.Error(t, errSet)
 }
 
 func Test3TTL(t *testing.T) {
-	a := assert.New(t)
-
 	l, errLog := loginfo.New(2)
-	a.Nil(errLog)
+	assert.Nil(t, errLog)
 
 	inmemStore, err := NewBStoreInMem(l)
-	defer inmemStore.Close()
-
-	a.Nil(err)
+	assert.Nil(t, err)
+	defer func() {
+		assert.Nil(t, inmemStore.Close())
+	}()
 
 	kPrefix := "prefix-"
 	kv := KV{kPrefix + "x", "y"}
 	ttl := 1
 
 	errSet := inmemStore.SetTTL(kv, uint8(ttl))
-	a.Nil(errSet)
+	assert.Nil(t, errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
 	_, errGet := inmemStore.GetKVByK(kv.key)
-	a.Error(errGet, "")
+	assert.Error(t, errGet)
 }
