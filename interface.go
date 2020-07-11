@@ -20,7 +20,7 @@ type Store interface {
 	// and an error not nil.
 	GetVByK([]byte) ([]byte, error)
 	// Returns a slice of KV if prefix found.
-	// If not found it returns the first key in store.
+	// If not found it returns empty slice.
 	GetKVByPrefix([]byte) ([]KV, error)
 	// Close closes the opened KV store.
 	Close() error

@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Target of test:
+// a. that get by prefix returns correct elements in slice.
 func Test1ByPrefix(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
@@ -19,17 +21,15 @@ func Test1ByPrefix(t *testing.T) {
 	}()
 
 	kPrefix := "prefix-"
+
+	// inserting first element.
+	kv1 := KV{[]byte(kPrefix + "x1"), []byte("y1")}
+	errSet := inmemStore.Set(kv1)
+	assert.Nil(t, errSet)
+
 	var wg sync.WaitGroup
 
-	wg.Add(3)
-
-	go func() {
-		kv1 := KV{[]byte(kPrefix + "x1"), []byte("y1")}
-		errSet := inmemStore.Set(kv1)
-		assert.Nil(t, errSet)
-
-		wg.Done()
-	}()
+	wg.Add(2)
 
 	go func() {
 		kv2 := KV{[]byte(kPrefix + "x2"), []byte("y2")}
@@ -51,9 +51,10 @@ func Test1ByPrefix(t *testing.T) {
 
 	v, errGet := inmemStore.GetKVByPrefix([]byte(kPrefix))
 	assert.Nil(t, errGet)
-	assert.Equal(t, len(v), 3)
+	assert.Equal(t, len(v), 3) // a.
+	assert.Contains(t, v, kv1) // a.
 
-	for i, v := range v {
-		l.Info(i, v)
-	}
+	vBadPrefix, errBadPrefix := inmemStore.GetKVByPrefix([]byte("xxxxxxxxxx"))
+	assert.Nil(t, errBadPrefix)
+	assert.Equal(t, 0, len(vBadPrefix)) // a.
 }
