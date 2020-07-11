@@ -9,12 +9,6 @@ import (
 	badger "github.com/dgraph-io/badger/v2"
 )
 
-// KV is key value for the NoSQL DB.
-type KV struct {
-	key   string
-	value string
-}
-
 // BStore Concentrates information defining a KV store.
 type BStore struct {
 	theLogger loginfo.LogInfo // logger needed only for package logging

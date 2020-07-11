@@ -5,7 +5,7 @@ import (
 )
 
 // GetKVByK fetches key from store based on passed value.
-func (s BStore) GetKVByK(theK string) ([]byte, error) {
+func (s BStore) GetKVByK(theK []byte) ([]byte, error) {
 	var result []byte
 
 	errView := s.TheStore.View(func(txn *badger.Txn) error {
@@ -25,7 +25,7 @@ func (s BStore) GetKVByK(theK string) ([]byte, error) {
 }
 
 // GetKVByPrefix in case it does not find keys, returns first key in store.
-func (s BStore) GetKVByPrefix(theKPrefix string) ([]KV, error) {
+func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]KV, error) {
 	var result []KV
 
 	errView := s.TheStore.View(func(txn *badger.Txn) error {
@@ -35,7 +35,7 @@ func (s BStore) GetKVByPrefix(theKPrefix string) ([]KV, error) {
 		iterator := txn.NewIterator(options)
 		defer iterator.Close()
 
-		prefix := []byte(theKPrefix)
+		prefix := theKPrefix
 		var errItem error
 
 		for iterator.Seek(prefix); iterator.ValidForPrefix(prefix); iterator.Next() {
@@ -46,8 +46,8 @@ func (s BStore) GetKVByPrefix(theKPrefix string) ([]KV, error) {
 				s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
 
 				result = append(result, KV{
-					string(k),
-					string(itemValue),
+					k,
+					itemValue,
 				})
 				return nil
 			})

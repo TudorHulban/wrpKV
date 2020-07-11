@@ -19,13 +19,13 @@ func Test1Set(t *testing.T) {
 	}()
 
 	kPrefix := "prefix-"
-	kv := KV{kPrefix + "x", "y"}
+	kv := KV{[]byte(kPrefix + "x"), []byte("y")}
 
 	// test insert
 	assert.Nil(t, inmemStore.Set(kv))
 
 	// test update
-	kv.value = "z"
+	kv.value = []byte("z")
 	assert.Nil(t, inmemStore.Set(kv))
 
 	v, errGet := inmemStore.GetKVByK(kv.key)
@@ -42,7 +42,7 @@ func Test2Close(t *testing.T) {
 	assert.Nil(t, inmemStore.Close())
 
 	// test insert on closed store.
-	kv := KV{"x", "y"}
+	kv := KV{[]byte("x"), []byte("y")}
 	errSet := inmemStore.Set(kv)
 	assert.Error(t, errSet)
 }
@@ -58,7 +58,7 @@ func Test3TTL(t *testing.T) {
 	}()
 
 	kPrefix := "prefix-"
-	kv := KV{kPrefix + "x", "y"}
+	kv := KV{[]byte(kPrefix + "x"), []byte("y")}
 	ttl := 1
 
 	errSet := inmemStore.SetTTL(kv, uint8(ttl))

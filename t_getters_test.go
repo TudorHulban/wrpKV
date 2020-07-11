@@ -24,7 +24,7 @@ func Test1ByPrefix(t *testing.T) {
 	wg.Add(3)
 
 	go func() {
-		kv1 := KV{kPrefix + "x1", "y1"}
+		kv1 := KV{[]byte(kPrefix + "x1"), []byte("y1")}
 		errSet := inmemStore.Set(kv1)
 		assert.Nil(t, errSet)
 
@@ -32,7 +32,7 @@ func Test1ByPrefix(t *testing.T) {
 	}()
 
 	go func() {
-		kv2 := KV{kPrefix + "x2", "y2"}
+		kv2 := KV{[]byte(kPrefix + "x2"), []byte("y2")}
 		errSet := inmemStore.Set(kv2)
 		assert.Nil(t, errSet)
 
@@ -40,7 +40,7 @@ func Test1ByPrefix(t *testing.T) {
 	}()
 
 	go func() {
-		kv3 := KV{kPrefix + "x3", "y3"}
+		kv3 := KV{[]byte(kPrefix + "x3"), []byte("y3")}
 		errSet := inmemStore.Set(kv3)
 		assert.Nil(t, errSet)
 
@@ -49,7 +49,7 @@ func Test1ByPrefix(t *testing.T) {
 
 	wg.Wait()
 
-	v, errGet := inmemStore.GetKVByPrefix(kPrefix)
+	v, errGet := inmemStore.GetKVByPrefix([]byte(kPrefix))
 	assert.Nil(t, errGet)
 	assert.Equal(t, len(v), 3)
 
