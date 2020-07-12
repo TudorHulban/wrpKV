@@ -10,7 +10,7 @@ import (
 
 // Target of test:
 // a. that get by prefix returns correct elements in slice.
-func Test1ByPrefix(t *testing.T) {
+func TestGetByPrefix(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
 

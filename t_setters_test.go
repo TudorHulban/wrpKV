@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test1Set(t *testing.T) {
+func TestSet(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
 
@@ -29,12 +29,12 @@ func Test1Set(t *testing.T) {
 	kv.value = []byte("z")
 	assert.Nil(t, inmemStore.Set(kv))
 
-	v, errGet := inmemStore.GetKVByK(kv.key)
+	v, errGet := inmemStore.GetVByK(kv.key)
 	assert.Nil(t, errGet)
 	assert.Equal(t, v, []byte(kv.value))
 }
 
-func Test2Close(t *testing.T) {
+func TestClose(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
 
@@ -66,7 +66,7 @@ func Test3TTL(t *testing.T) {
 	assert.Nil(t, errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
-	_, errGet := inmemStore.GetKVByK(kv.key)
+	_, errGet := inmemStore.GetVByK(kv.key)
 	assert.Error(t, errGet)
 }
 

@@ -4,8 +4,8 @@ import (
 	badger "github.com/dgraph-io/badger/v2"
 )
 
-// GetKVByK fetches key from store based on passed value.
-func (s BStore) GetKVByK(theK []byte) ([]byte, error) {
+// GetVByK fetches value from store based on passed key.
+func (s BStore) GetVByK(theK []byte) ([]byte, error) {
 	var result []byte
 
 	errView := s.TheStore.View(func(txn *badger.Txn) error {
