@@ -3,24 +3,29 @@ package badgerwrap
 /*
 File contains constructors for model.
 Different constructors for disk sync options were written for better usability.
+Passing logger as pointer as we might not want more than one logger.
 */
 
 import (
 	"github.com/TudorHulban/loginfo"
 	badger "github.com/dgraph-io/badger/v2"
+	"github.com/pkg/errors"
 )
 
+// BStore Concentrates information defining a KV store.
+type BStore struct {
+	theLogger *loginfo.LogInfo // logger needed only for package logging
+	TheStore  *badger.DB
+}
+
 // NewBStoreDiskWSyncWrites returns a type containing a store that satisfies store interface.
-func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error) {
+func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger *loginfo.LogInfo) (*BStore, error) {
 	dbBadger, errOpen := badger.Open(badger.DefaultOptions(dbFilePath))
 	if errOpen != nil {
-		return BStore{
-			theLogger: extLogger,
-			TheStore:  nil,
-		}, errOpen
+		return nil, errors.WithMessage(errOpen, "could not open passed file path in constructor")
 	}
 
-	return BStore{
+	return &BStore{
 		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, errOpen
@@ -28,52 +33,42 @@ func NewBStoreDiskWSyncWrites(dbFilePath string, extLogger loginfo.LogInfo) (BSt
 
 // NewBStoreDisk returns a type containing a store that satisfies store interface.
 // No sync writes.
-func NewBStoreDisk(dbFilePath string, extLogger loginfo.LogInfo) (BStore, error) {
+func NewBStoreDisk(dbFilePath string, extLogger *loginfo.LogInfo) (*BStore, error) {
 	dbBadger, errOpen := badger.Open(badger.DefaultOptions(dbFilePath).WithSyncWrites(false))
 	if errOpen != nil {
-		return BStore{
-			theLogger: extLogger,
-			TheStore:  nil,
-		}, errOpen
+		return nil, errors.WithMessage(errOpen, "could not open passed file path in constructor")
 	}
 
-	return BStore{
+	return &BStore{
 		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, errOpen
 }
 
 // NewBStoreInMem Creates in memory Badger DB.
-func NewBStoreInMem(extLogger loginfo.LogInfo) (BStore, error) {
+func NewBStoreInMem(extLogger *loginfo.LogInfo) (*BStore, error) {
 	dbBadger, errOpen := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if errOpen != nil {
-		return BStore{
-			theLogger: extLogger,
-			TheStore:  nil,
-		}, errOpen
+		return nil, errors.WithMessage(errOpen, "error when creating in memory store")
 	}
 
-	return BStore{
+	return &BStore{
 		theLogger: extLogger,
 		TheStore:  dbBadger,
 	}, nil
 }
 
 // NewBStoreInMemNoLogging Creates in memory Badger DB.
-func NewBStoreInMemNoLogging(extLogger loginfo.LogInfo) (BStore, error) {
+func NewBStoreInMemNoLogging() (*BStore, error) {
 	options := badger.DefaultOptions("").WithInMemory(true).WithLogger(nil)
 
 	dbBadger, errOpen := badger.Open(options)
 	if errOpen != nil {
-		return BStore{
-			theLogger: extLogger,
-			TheStore:  nil,
-		}, errOpen
+		return nil, errors.WithMessage(errOpen, "error when creating in memory store")
 	}
 
-	return BStore{
-		theLogger: extLogger,
-		TheStore:  dbBadger,
+	return &BStore{
+		TheStore: dbBadger,
 	}, nil
 }
 

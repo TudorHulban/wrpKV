@@ -13,7 +13,7 @@ func TestSet(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
 
-	inmemStore, err := NewBStoreInMem(l)
+	inmemStore, err := NewBStoreInMem(&l)
 	assert.Nil(t, err)
 	defer func() {
 		assert.Nil(t, inmemStore.Close())
@@ -72,9 +72,7 @@ func Test3TTL(t *testing.T) {
 
 // BenchmarkSet-4   	   11239	     91726 ns/op	   22480 B/op	      59 allocs/op
 func BenchmarkSet(b *testing.B) {
-	l, _ := loginfo.New(0) // no logging
-
-	inmemStore, _ := NewBStoreInMemNoLogging(l)
+	inmemStore, _ := NewBStoreInMemNoLogging()
 	defer func() {
 		inmemStore.Close()
 	}()

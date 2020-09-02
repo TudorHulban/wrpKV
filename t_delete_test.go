@@ -11,7 +11,7 @@ func TestDelete(t *testing.T) {
 	l, errLog := loginfo.New(2)
 	assert.Nil(t, errLog)
 
-	inmemStore, err := NewBStoreInMem(l)
+	inmemStore, err := NewBStoreInMem(&l)
 	assert.Nil(t, err)
 	defer func() {
 		assert.Nil(t, inmemStore.Close())
