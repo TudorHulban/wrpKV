@@ -1,20 +1,20 @@
 package badgerwrap
 
 import (
+	"os"
 	"sync"
 	"testing"
 
-	"github.com/TudorHulban/loginfo"
+	"github.com/TudorHulban/log"
 	"github.com/stretchr/testify/assert"
 )
 
 // Target of test:
 // a. that get by prefix returns correct elements in slice.
 func TestGetByPrefix(t *testing.T) {
-	l, errLog := loginfo.New(2)
-	assert.Nil(t, errLog)
+	l := log.New(log.DEBUG, os.Stderr, true)
 
-	inmemStore, err := NewBStoreInMem(&l)
+	inmemStore, err := NewBStoreInMem(l)
 	assert.Nil(t, err)
 	defer func() {
 		assert.Nil(t, inmemStore.Close())

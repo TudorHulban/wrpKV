@@ -1,19 +1,19 @@
 package badgerwrap
 
 import (
+	"os"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/TudorHulban/loginfo"
+	"github.com/TudorHulban/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSet(t *testing.T) {
-	l, errLog := loginfo.New(2)
-	assert.Nil(t, errLog)
+	l := log.New(log.DEBUG, os.Stderr, true)
 
-	inmemStore, err := NewBStoreInMem(&l)
+	inmemStore, err := NewBStoreInMem(l)
 	assert.Nil(t, err)
 	defer func() {
 		assert.Nil(t, inmemStore.Close())
@@ -35,8 +35,7 @@ func TestSet(t *testing.T) {
 }
 
 func TestClose(t *testing.T) {
-	l, errLog := loginfo.New(2)
-	assert.Nil(t, errLog)
+	l := log.New(log.DEBUG, os.Stderr, true)
 
 	inmemStore, err := NewBStoreInMem(l)
 	assert.Nil(t, err)
@@ -49,8 +48,7 @@ func TestClose(t *testing.T) {
 }
 
 func Test3TTL(t *testing.T) {
-	l, errLog := loginfo.New(2)
-	assert.Nil(t, errLog)
+	l := log.New(log.DEBUG, os.Stderr, true)
 
 	inmemStore, err := NewBStoreInMem(l)
 	assert.Nil(t, err)

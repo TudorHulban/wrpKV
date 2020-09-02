@@ -1,17 +1,17 @@
 package badgerwrap
 
 import (
+	"os"
 	"testing"
 
-	"github.com/TudorHulban/loginfo"
+	"github.com/TudorHulban/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDelete(t *testing.T) {
-	l, errLog := loginfo.New(2)
-	assert.Nil(t, errLog)
+	l := log.New(log.DEBUG, os.Stderr, true)
 
-	inmemStore, err := NewBStoreInMem(&l)
+	inmemStore, err := NewBStoreInMem(l)
 	assert.Nil(t, err)
 	defer func() {
 		assert.Nil(t, inmemStore.Close())
