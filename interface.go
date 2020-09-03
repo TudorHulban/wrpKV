@@ -6,8 +6,8 @@ File contains interface for interacting with KV stores and KV struct.
 
 // KV is key value for the NoSQL DB.
 type KV struct {
-	key   []byte
-	value []byte
+	Key   []byte
+	Value []byte
 }
 
 // KVStore is interface for interacting with KV stores.
