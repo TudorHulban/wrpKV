@@ -15,11 +15,10 @@ func (s BStore) GetVByK(theK []byte) ([]byte, error) {
 		}
 		s.theLogger.Debugf("size: %v, expires: %v", item.EstimatedSize(), item.ExpiresAt())
 
-		errItem := item.Value(func(itemVals []byte) error {
+		return item.Value(func(itemVals []byte) error {
 			result = append(result, itemVals...)
 			return nil
 		})
-		return errItem
 	})
 	return result, errView
 }
@@ -51,6 +50,7 @@ func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]KV, error) {
 				})
 				return nil
 			})
+			// eraly exit if any error
 			if errItem != nil {
 				return errItem
 			}

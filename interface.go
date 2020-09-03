@@ -15,10 +15,15 @@ type Store interface {
 	// Inserts or updates KV in store.
 	Set(KV) error
 	// Inserts or updates KV in store. Time To Live in seconds.
-	SetTTL(KV, int) error
-	// Returns value for passed key if found. If not found it returns empty slice
-	// and an error not nil.
+	SetTTL(KV, uint) error
+	// Inserts or updates KV in store. Value is to be serialized structure.
+	SetAny([]byte, interface{}) error
+	// Inserts or updates KV in store. Value is to be serialized structure.
+	SetAnyTTL([]byte, interface{}, uint) error
+	// Returns value for passed key if found. If not found it returns empty slice and an error not nil.
 	GetVByK([]byte) ([]byte, error)
+	// Fills up the passed pointer value for passed key if found. If not found it returns an error not nil.
+	GetAnyByK([]byte, interface{}) error
 	// Returns a slice of KV if prefix found.
 	// If not found it returns empty slice.
 	GetKVByPrefix([]byte) ([]KV, error)

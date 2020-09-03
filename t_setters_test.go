@@ -60,7 +60,7 @@ func Test3TTL(t *testing.T) {
 	kv := KV{[]byte(kPrefix + "x"), []byte("y")}
 	ttl := 1
 
-	errSet := inmemStore.SetTTL(kv, uint8(ttl))
+	errSet := inmemStore.SetTTL(kv, uint(ttl))
 	assert.Nil(t, errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
