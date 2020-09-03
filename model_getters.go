@@ -23,6 +23,15 @@ func (s BStore) GetVByK(theK []byte) ([]byte, error) {
 	return result, errView
 }
 
+// GetAnyByK fetches value and injects it into passed pointer type.
+func (s BStore) GetAnyByK(theK []byte, decodeInTo interface{}) error {
+	v, errGet := s.GetVByK(theK)
+	if errGet != nil {
+		return errGet
+	}
+	return anyDecoder([]byte(v), decodeInTo)
+}
+
 // GetKVByPrefix in case it does not find keys, returns first key in store.
 func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]KV, error) {
 	var result []KV
