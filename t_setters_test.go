@@ -35,9 +35,7 @@ func TestSet(t *testing.T) {
 }
 
 func TestClose(t *testing.T) {
-	l := log.New(log.DEBUG, os.Stderr, true)
-
-	inmemStore, err := NewBStoreInMem(l)
+	inmemStore, err := NewBStoreInMemNoLogging()
 	assert.Nil(t, err)
 	assert.Nil(t, inmemStore.Close())
 
@@ -47,7 +45,7 @@ func TestClose(t *testing.T) {
 	assert.Error(t, errSet)
 }
 
-func Test3TTL(t *testing.T) {
+func TestTTL(t *testing.T) {
 	l := log.New(log.DEBUG, os.Stderr, true)
 
 	inmemStore, err := NewBStoreInMem(l)
@@ -68,12 +66,15 @@ func Test3TTL(t *testing.T) {
 	assert.Error(t, errGet)
 }
 
-// BenchmarkSet-4   	   11239	     91726 ns/op	   22480 B/op	      59 allocs/op
+// BenchmarkSet-4   	   19934	     59591 ns/op	    1367 B/op	      34 allocs/op
 func BenchmarkSet(b *testing.B) {
 	inmemStore, _ := NewBStoreInMemNoLogging()
 	defer func() {
 		inmemStore.Close()
 	}()
+
+	b.ReportAllocs()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		inmemStore.Set(KV{
