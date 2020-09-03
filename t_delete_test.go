@@ -22,13 +22,13 @@ func TestDelete(t *testing.T) {
 	// test insert
 	assert.Nil(t, inmemStore.Set(kv))
 
-	v0, errGet := inmemStore.GetVByK(kv.key)
+	v0, errGet := inmemStore.GetVByK(kv.Key)
 	assert.Nil(t, errGet)
-	assert.Equal(t, v0, []byte(kv.value))
+	assert.Equal(t, v0, []byte(kv.Value))
 
 	// now delete the KV
-	assert.Nil(t, inmemStore.DeleteKVByK(kv.key))
-	v1, errGet := inmemStore.GetVByK(kv.key)
+	assert.Nil(t, inmemStore.DeleteKVByK(kv.Key))
+	v1, errGet := inmemStore.GetVByK(kv.Key)
 	assert.Error(t, errGet)
 	assert.Nil(t, v1)
 }

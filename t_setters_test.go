@@ -26,12 +26,12 @@ func TestSet(t *testing.T) {
 	assert.Nil(t, inmemStore.Set(kv))
 
 	// test update
-	kv.value = []byte("z")
+	kv.Value = []byte("z")
 	assert.Nil(t, inmemStore.Set(kv))
 
-	v, errGet := inmemStore.GetVByK(kv.key)
+	v, errGet := inmemStore.GetVByK(kv.Key)
 	assert.Nil(t, errGet)
-	assert.Equal(t, v, []byte(kv.value))
+	assert.Equal(t, v, []byte(kv.Value))
 }
 
 func TestClose(t *testing.T) {
@@ -62,7 +62,7 @@ func TestTTL(t *testing.T) {
 	assert.Nil(t, errSet)
 
 	time.Sleep(time.Duration(ttl+1) * time.Second)
-	_, errGet := inmemStore.GetVByK(kv.key)
+	_, errGet := inmemStore.GetVByK(kv.Key)
 	assert.Error(t, errGet)
 }
 
