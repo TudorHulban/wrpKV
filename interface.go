@@ -10,8 +10,8 @@ type KV struct {
 	value []byte
 }
 
-// Store is interface for interacting with KV stores.
-type Store interface {
+// KVStore is interface for interacting with KV stores.
+type KVStore interface {
 	// Inserts or updates KV in store.
 	Set(KV) error
 	// Inserts or updates KV in store. Time To Live in seconds.
