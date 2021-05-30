@@ -1,6 +1,7 @@
 package badger
 
 import (
+	"kv"
 	"os"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestDelete(t *testing.T) {
 		assert.Nil(t, inmemStore.Close())
 	}()
 
-	kv := KV{[]byte("x"), []byte("y")}
+	kv := kv.KV{[]byte("x"), []byte("y")}
 
 	// test insert
 	assert.Nil(t, inmemStore.Set(kv))

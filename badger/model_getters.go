@@ -1,41 +1,45 @@
 package badger
 
 import (
-	"github.com/TudorHulban/badgerwrap/badger/kv"
+	"kv"
+
 	badger "github.com/dgraph-io/badger/v2"
 )
 
 // GetVByK fetches value from store based on passed key.
-func (s BStore) GetVByK(theK []byte) ([]byte, error) {
-	var result []byte
+func (s BStore) GetVByK(key []byte) ([]byte, error) {
+	var res []byte
 
 	errView := s.Store.View(func(txn *badger.Txn) error {
-		item, errGet := txn.Get([]byte(theK))
+		value, errGet := txn.Get([]byte(key))
 		if errGet != nil {
 			return errGet
 		}
-		s.logger.Debugf("size: %v, expires: %v", item.EstimatedSize(), item.ExpiresAt())
 
-		return item.Value(func(itemVals []byte) error {
-			result = append(result, itemVals...)
+		go s.logger.Debugf("size: %v, expires: %v", value.EstimatedSize(), value.ExpiresAt())
+
+		return value.Value(func(itemVals []byte) error {
+			res = append(res, itemVals...)
 			return nil
 		})
 	})
-	return result, errView
+
+	return res, errView
 }
 
 // GetAnyByK fetches value and injects it into passed pointer type.
-func (s BStore) GetAnyByK(theK []byte, decodeInTo interface{}) error {
-	v, errGet := s.GetVByK(theK)
+func (s BStore) GetAnyByK(key []byte, decodeInTo interface{}) error {
+	value, errGet := s.GetVByK(key)
 	if errGet != nil {
 		return errGet
 	}
-	return anyDecoder([]byte(v), decodeInTo)
+
+	return anyDecoder([]byte(value), decodeInTo)
 }
 
 // GetKVByPrefix in case it does not find keys, returns first key in store.
-func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]kv.KV, error) {
-	var result []KV
+func (s BStore) GetKVByPrefix(keyPrefix []byte) ([]kv.KV, error) {
+	var result []kv.KV
 
 	errView := s.Store.View(func(txn *badger.Txn) error {
 		options := badger.DefaultIteratorOptions
@@ -44,28 +48,28 @@ func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]kv.KV, error) {
 		iterator := txn.NewIterator(options)
 		defer iterator.Close()
 
-		prefix := theKPrefix
 		var errItem error
 
-		for iterator.Seek(prefix); iterator.ValidForPrefix(prefix); iterator.Next() {
+		for iterator.Seek(keyPrefix); iterator.ValidForPrefix(keyPrefix); iterator.Next() {
 			item := iterator.Item()
 			k := item.Key()
 
 			errItem = item.Value(func(itemValue []byte) error {
 				s.logger.Debugf("key=%s, value=%s\n", k, itemValue)
 
-				result = append(result, KV{
+				result = append(result, kv.KV{
 					k,
 					itemValue,
 				})
 				return nil
 			})
-			// eraly exit if any error
+			// early exit if any error
 			if errItem != nil {
 				return errItem
 			}
 		}
 		return errItem
 	})
+
 	return result, errView
 }

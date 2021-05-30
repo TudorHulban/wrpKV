@@ -1,6 +1,7 @@
 package badger
 
 import (
+	"kv"
 	"os"
 	"sync"
 	"testing"
@@ -23,7 +24,7 @@ func TestGetByPrefix(t *testing.T) {
 	kPrefix := "prefix-"
 
 	// inserting first element.
-	kv1 := KV{[]byte(kPrefix + "x1"), []byte("y1")}
+	kv1 := kv.KV{[]byte(kPrefix + "x1"), []byte("y1")}
 	errSet := inmemStore.Set(kv1)
 	assert.Nil(t, errSet)
 
@@ -32,7 +33,7 @@ func TestGetByPrefix(t *testing.T) {
 	wg.Add(2)
 
 	go func() {
-		kv2 := KV{[]byte(kPrefix + "x2"), []byte("y2")}
+		kv2 := kv.KV{[]byte(kPrefix + "x2"), []byte("y2")}
 		errSet := inmemStore.Set(kv2)
 		assert.Nil(t, errSet)
 
@@ -40,7 +41,7 @@ func TestGetByPrefix(t *testing.T) {
 	}()
 
 	go func() {
-		kv3 := KV{[]byte(kPrefix + "x3"), []byte("y3")}
+		kv3 := kv.KV{[]byte(kPrefix + "x3"), []byte("y3")}
 		errSet := inmemStore.Set(kv3)
 		assert.Nil(t, errSet)
 

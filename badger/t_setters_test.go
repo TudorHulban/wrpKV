@@ -1,6 +1,7 @@
 package badger
 
 import (
+	"kv"
 	"os"
 	"strconv"
 	"testing"
@@ -20,7 +21,7 @@ func TestSet(t *testing.T) {
 	}()
 
 	kPrefix := "prefix-"
-	kv := KV{[]byte(kPrefix + "x"), []byte("y")}
+	kv := kv.KV{[]byte(kPrefix + "x"), []byte("y")}
 
 	// test insert
 	assert.Nil(t, inmemStore.Set(kv))
@@ -40,7 +41,7 @@ func TestClose(t *testing.T) {
 	assert.Nil(t, inmemStore.Close())
 
 	// test insert on closed store.
-	kv := KV{[]byte("x"), []byte("y")}
+	kv := kv.KV{[]byte("x"), []byte("y")}
 	errSet := inmemStore.Set(kv)
 	assert.Error(t, errSet)
 }
@@ -55,13 +56,13 @@ func TestTTL(t *testing.T) {
 	}()
 
 	kPrefix := "prefix-"
-	kv := KV{[]byte(kPrefix + "x"), []byte("y")}
-	ttl := 1
+	kv := kv.KV{[]byte(kPrefix + "x"), []byte("y")}
+	ttlSeconds := 1
 
-	errSet := inmemStore.SetTTL(kv, uint(ttl))
+	errSet := inmemStore.SetTTL(kv, uint(ttlSeconds))
 	assert.Nil(t, errSet)
 
-	time.Sleep(time.Duration(ttl+1) * time.Second)
+	time.Sleep(time.Duration(ttlSeconds+1) * time.Second)
 	_, errGet := inmemStore.GetVByK(kv.Key)
 	assert.Error(t, errGet)
 }
@@ -77,7 +78,7 @@ func BenchmarkSet(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		inmemStore.Set(KV{
+		inmemStore.Set(kv.KV{
 			[]byte(strconv.Itoa(i)),
 			[]byte("x"),
 		})

@@ -1,4 +1,4 @@
-module github.com/TudorHulban/badgerwrap
+module kv
 
 go 1.14
 
