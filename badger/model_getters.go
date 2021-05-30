@@ -1,6 +1,7 @@
-package badgerwrap
+package badger
 
 import (
+	"github.com/TudorHulban/badgerwrap/badger/kv"
 	badger "github.com/dgraph-io/badger/v2"
 )
 
@@ -8,12 +9,12 @@ import (
 func (s BStore) GetVByK(theK []byte) ([]byte, error) {
 	var result []byte
 
-	errView := s.TheStore.View(func(txn *badger.Txn) error {
+	errView := s.Store.View(func(txn *badger.Txn) error {
 		item, errGet := txn.Get([]byte(theK))
 		if errGet != nil {
 			return errGet
 		}
-		s.theLogger.Debugf("size: %v, expires: %v", item.EstimatedSize(), item.ExpiresAt())
+		s.logger.Debugf("size: %v, expires: %v", item.EstimatedSize(), item.ExpiresAt())
 
 		return item.Value(func(itemVals []byte) error {
 			result = append(result, itemVals...)
@@ -33,10 +34,10 @@ func (s BStore) GetAnyByK(theK []byte, decodeInTo interface{}) error {
 }
 
 // GetKVByPrefix in case it does not find keys, returns first key in store.
-func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]KV, error) {
+func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]kv.KV, error) {
 	var result []KV
 
-	errView := s.TheStore.View(func(txn *badger.Txn) error {
+	errView := s.Store.View(func(txn *badger.Txn) error {
 		options := badger.DefaultIteratorOptions
 		options.PrefetchSize = 10
 
@@ -51,7 +52,7 @@ func (s BStore) GetKVByPrefix(theKPrefix []byte) ([]KV, error) {
 			k := item.Key()
 
 			errItem = item.Value(func(itemValue []byte) error {
-				s.theLogger.Debugf("key=%s, value=%s\n", k, itemValue)
+				s.logger.Debugf("key=%s, value=%s\n", k, itemValue)
 
 				result = append(result, KV{
 					k,

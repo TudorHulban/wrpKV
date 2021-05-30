@@ -1,8 +1,4 @@
-package badgerwrap
-
-/*
-File contains interface for interacting with KV stores and KV struct.
-*/
+package kv
 
 // KV is key value for the NoSQL DB.
 type KV struct {

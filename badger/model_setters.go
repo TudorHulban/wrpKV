@@ -1,4 +1,4 @@
-package badgerwrap
+package badger
 
 import (
 	"time"
@@ -7,8 +7,8 @@ import (
 )
 
 // Set sets or updates key in store.
-func (s BStore) Set(theKV KV) error {
-	return s.TheStore.Update(func(txn *badger.Txn) error {
+func (s BStore) Set(theKV kv.KV) error {
+	return s.Store.Update(func(txn *badger.Txn) error {
 		return txn.Set(theKV.Key, theKV.Value)
 	})
 }
@@ -41,7 +41,7 @@ func (s BStore) SetAnyTTL(theKey []byte, theValue interface{}, ttlSecs uint) err
 
 // SetTTL can be used for inserts and updates. Time To Live in seconds.
 func (s BStore) SetTTL(theKV KV, ttlSecs uint) error {
-	return s.TheStore.Update(func(txn *badger.Txn) error {
+	return s.Store.Update(func(txn *badger.Txn) error {
 		entry := badger.NewEntry(theKV.Key, theKV.Value).WithTTL(time.Second * time.Duration(ttlSecs))
 		return txn.SetEntry(entry)
 	})

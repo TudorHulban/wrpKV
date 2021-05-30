@@ -1,4 +1,4 @@
-package badgerwrap
+package badger
 
 import (
 	"os"
