@@ -1,2 +1,1 @@
-# Interacting with KV stores:
-### Implemented - Badger DB
+## Contract for interacting with KV stores.
