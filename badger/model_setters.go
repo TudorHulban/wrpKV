@@ -1,8 +1,9 @@
 package badger
 
 import (
-	"kv"
 	"time"
+
+	"github.com/TudorHulban/kv"
 
 	badger "github.com/dgraph-io/badger/v2"
 )

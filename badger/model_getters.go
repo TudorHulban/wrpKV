@@ -1,7 +1,7 @@
 package badger
 
 import (
-	"kv"
+	"github.com/TudorHulban/kv"
 
 	badger "github.com/dgraph-io/badger/v2"
 )
