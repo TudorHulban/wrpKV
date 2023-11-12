@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type tstruct struct {
@@ -18,18 +17,14 @@ func TestGobers(t *testing.T) {
 		F2: []byte("a"),
 	}
 
-	resNil, errEncodeNil := Encoder(nil)
-	assert.Error(t, errEncodeNil)
-	require.Zero(t, resNil)
-
-	resEnc, errEncode := Encoder(v)
+	resEnc, errEncode := Encode(v)
 	assert.NoError(t, errEncode)
 	assert.NotNil(t, resEnc)
 
 	var p tstruct
 
 	assert.NoError(t,
-		Decoder(resEnc, &p),
+		Decode(resEnc, &p),
 	)
 	assert.Equal(t, v, p)
 }

@@ -73,7 +73,7 @@ func (p *Pool) GetAny(key string, decodeInTo interface{}) error {
 	var buf []byte
 	buf = append(buf, value.([]uint8)...)
 
-	return helpers.Decoder(buf, decodeInTo)
+	return helpers.Decode(buf, decodeInTo)
 }
 
 // See more on SCAN in https://redis.io/commands/scan/

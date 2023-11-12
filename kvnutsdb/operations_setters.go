@@ -2,7 +2,7 @@ package kvnuts
 
 import (
 	"github.com/TudorHulban/kv/helpers"
-	"github.com/xujiajun/nutsdb"
+	"github.com/nutsdb/nutsdb"
 )
 
 // Set sets or updates a key in store.
@@ -17,7 +17,7 @@ func (s *KVStore) Set(bucket string, key, value []byte) error {
 
 // SetAny sets or updates key in store.
 func (s *KVStore) SetAny(bucket string, key []byte, value any) error {
-	encodedValue, errEncode := helpers.Encoder(value)
+	encodedValue, errEncode := helpers.Encode(value)
 	if errEncode != nil {
 		return errEncode
 	}

@@ -1,6 +1,6 @@
 package kvnuts
 
-import "github.com/xujiajun/nutsdb"
+import "github.com/nutsdb/nutsdb"
 
 // GetValueByKey fetches value from store based on passed key.
 func (s *KVStore) GetValueByKey(bucket string, key []byte) ([]byte, error) {

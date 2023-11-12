@@ -9,7 +9,7 @@ import (
 
 func TestMemorySetUpdateDelete(t *testing.T) {
 	store, errNewStore := NewStoreInMemory(_segmentSizeTests)
-	assert.NoError(t, errNewStore)
+	require.NoError(t, errNewStore)
 
 	defer func() {
 		assert.NoError(t,
@@ -21,7 +21,8 @@ func TestMemorySetUpdateDelete(t *testing.T) {
 	bucket := "A"
 
 	assert.NoError(t,
-		store.Set(bucket, key, value))
+		store.Set(bucket, key, value),
+	)
 
 	fetchedValue0, errGetNonExistentKey := store.GetValueByKey(bucket, value)
 	assert.Error(t, errGetNonExistentKey)
@@ -53,7 +54,7 @@ func TestMemorySetUpdateDelete(t *testing.T) {
 
 func TestDiskSetUpdateDelete(t *testing.T) {
 	store, err := NewStore(_segmentSizeTests)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	defer func() {
 		assert.NoError(t,

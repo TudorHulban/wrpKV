@@ -17,7 +17,7 @@ func (p *Pool) Set(kv KV) error {
 }
 
 func (p *Pool) SetAny(key string, any interface{}) error {
-	buf, errEnc := helpers.Encoder(any)
+	buf, errEnc := helpers.Encode(any)
 	if errEnc != nil {
 		return fmt.Errorf("set any: %w", errEnc)
 	}

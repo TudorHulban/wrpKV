@@ -2,8 +2,10 @@ package kvnuts
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
-	"github.com/xujiajun/nutsdb"
+	"github.com/nutsdb/nutsdb"
 )
 
 type KV struct {
@@ -23,12 +25,13 @@ const _segmentSizeTests = 4 * 1024 * 1024 // 4 MB
 func NewStoreInMemory(mbSegmentSize uint) (*KVStore, error) {
 	db, errOpen := nutsdb.Open(
 		nutsdb.DefaultOptions,
-		nutsdb.WithDir(_folderDB),
+		nutsdb.WithDir(_folderDB+strconv.Itoa(int(time.Now().UnixNano()))),
 		nutsdb.WithSegmentSize(int64(mbSegmentSize)),
 	)
 	if errOpen != nil {
 		return nil,
-			fmt.Errorf("could not create database in folder: %s, %w", _folderDB, errOpen)
+			fmt.Errorf("could not create database in folder: %s, %w",
+				_folderDB, errOpen)
 	}
 
 	return &KVStore{

@@ -1,6 +1,6 @@
 package kvnuts
 
-import "github.com/xujiajun/nutsdb"
+import "github.com/nutsdb/nutsdb"
 
 // DeleteKVByKey Deletes KV by key.
 func (s *KVStore) DeleteKVByKey(bucket string, key []byte) error {
