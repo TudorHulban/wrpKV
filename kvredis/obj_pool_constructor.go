@@ -1,8 +1,6 @@
 package redis
 
 import (
-	"errors"
-
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -17,14 +15,13 @@ type KVs struct {
 }
 
 type Pool struct {
-	pool                redis.Pool
+	pool redis.Pool
+
 	maxNumberNamespaces uint
 	databaseNumber      uint
 }
 
 type PoolOption func(p *Pool)
-
-var errNoKeysToDelete = errors.New("no keys to delete")
 
 func WithDatabaseNumber(n uint) PoolOption {
 	return func(p *Pool) {

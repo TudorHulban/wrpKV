@@ -1,5 +1,10 @@
 package kv
 
+import (
+	"github.com/TudorHulban/kv/kvbadger"
+	kvnuts "github.com/TudorHulban/kv/kvnutsdb"
+)
+
 // KV is key value for the NoSQL DB.
 type KV struct {
 	Key   []byte
@@ -28,3 +33,6 @@ type KVStore interface {
 	// Close closes the opened KV store.
 	Close() error
 }
+
+var _ KVStore = kvbadger.KVStore{}
+var _ KVStore = kvnuts.KVStore{}
