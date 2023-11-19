@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TudorHulban/kv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,7 +42,7 @@ func TestOnClosedStore(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NoError(t, inMemoryStore.Close())
 
-	kv := KV{
+	kv := kv.KV{
 		Key:   []byte("x"),
 		Value: []byte("y"),
 	}
@@ -106,7 +107,7 @@ func BenchmarkSetKV(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		kv := KV{
+		kv := kv.KV{
 			Key:   []byte(strconv.Itoa(i)),
 			Value: []byte("x"),
 		}

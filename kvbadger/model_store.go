@@ -1,7 +1,5 @@
 package kvbadger
 
-// Different constructors for disk sync options for better usability.
-
 import (
 	"fmt"
 
@@ -9,13 +7,8 @@ import (
 	badger "github.com/dgraph-io/badger/v4"
 )
 
-type KV struct {
-	Key   []byte
-	Value []byte
-}
-
 type KVStore struct {
-	logger *log.Logger // logger needed only for package logging
+	logger *log.Logger
 	Store  *badger.DB
 }
 
@@ -91,7 +84,6 @@ func NewBStoreInMemoryNoLogging() (*KVStore, error) {
 		nil
 }
 
-// Close closes the store.
 func (s *KVStore) Close() error {
 	return s.Store.Close()
 }

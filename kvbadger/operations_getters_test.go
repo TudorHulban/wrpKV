@@ -4,6 +4,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/TudorHulban/kv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +19,7 @@ func TestGetByPrefix(t *testing.T) {
 
 	kPrefix := "prefix-"
 
-	kv0 := KV{
+	kv0 := kv.KV{
 		Key:   []byte(kPrefix + "x0"),
 		Value: []byte("y0"),
 	}
@@ -30,7 +31,7 @@ func TestGetByPrefix(t *testing.T) {
 	wg.Add(2)
 
 	go func() {
-		kv1 := KV{
+		kv1 := kv.KV{
 			Key:   []byte(kPrefix + "x1"),
 			Value: []byte("y1"),
 		}
@@ -43,7 +44,7 @@ func TestGetByPrefix(t *testing.T) {
 	}()
 
 	go func() {
-		kv2 := KV{
+		kv2 := kv.KV{
 			Key:   []byte(kPrefix + "x2"),
 			Value: []byte("y2"),
 		}

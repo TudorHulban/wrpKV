@@ -1,6 +1,7 @@
 package kvbadger
 
 import (
+	"github.com/TudorHulban/kv"
 	"github.com/TudorHulban/kv/helpers"
 	badger "github.com/dgraph-io/badger/v4"
 )
@@ -47,8 +48,8 @@ func (s *KVStore) GetAnyByK(key []byte, result any) error {
 	return helpers.Decode([]byte(encodedValue), result)
 }
 
-func (s *KVStore) GetKVByPrefix(keyPrefix []byte) ([]KV, error) {
-	var result []KV
+func (s *KVStore) GetKVByPrefix(keyPrefix []byte) ([]*kv.KV, error) {
+	var result []*kv.KV
 
 	errView := s.Store.
 		View(func(txn *badger.Txn) error {
@@ -72,7 +73,7 @@ func (s *KVStore) GetKVByPrefix(keyPrefix []byte) ([]KV, error) {
 							}
 						}()
 
-						result = append(result, KV{
+						result = append(result, &kv.KV{
 							Key:   itemKey,
 							Value: itemValue,
 						})

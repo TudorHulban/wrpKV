@@ -3,6 +3,7 @@ package kvbadger
 import (
 	"time"
 
+	"github.com/TudorHulban/kv"
 	"github.com/TudorHulban/kv/helpers"
 	badger "github.com/dgraph-io/badger/v4"
 )
@@ -17,7 +18,7 @@ func (s *KVStore) Set(key, value []byte) error {
 }
 
 // SetKV sets or updates a key value in store.
-func (s *KVStore) SetKV(kv KV) error {
+func (s *KVStore) SetKV(kv kv.KV) error {
 	return s.Set(kv.Key, kv.Value)
 }
 
