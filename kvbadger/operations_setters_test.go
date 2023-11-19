@@ -22,11 +22,17 @@ func TestSet(t *testing.T) {
 	key := []byte("prefix-" + "x")
 	value := []byte("y")
 
-	assert.NoError(t, inMemoryStore.Set(key, value))
+	assert.NoError(t, inMemoryStore.Set(kv.KV{
+		Key:   key,
+		Value: value,
+	}))
 
 	updateValue := []byte("z")
 	assert.NoError(t,
-		inMemoryStore.Set(key, updateValue),
+		inMemoryStore.Set(kv.KV{
+			Key:   key,
+			Value: updateValue,
+		}),
 	)
 
 	reconstructedValue, errGet := inMemoryStore.GetValueFor(key)
@@ -48,7 +54,7 @@ func TestOnClosedStore(t *testing.T) {
 	}
 
 	assert.Error(t,
-		inMemoryStore.SetKV(kv),
+		inMemoryStore.Set(kv),
 	)
 }
 
@@ -65,7 +71,13 @@ func TestTTL(t *testing.T) {
 	ttlSeconds := 1
 
 	assert.NoError(t,
-		inMemoryStore.SetTTL(key, value, uint(ttlSeconds)),
+		inMemoryStore.SetTTL(
+			kv.KV{
+				Key:   key,
+				Value: value,
+			},
+			uint(ttlSeconds),
+		),
 	)
 
 	time.Sleep(time.Duration(ttlSeconds+1) * time.Second)
@@ -92,7 +104,12 @@ func BenchmarkSet(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		inMemoryStore.Set([]byte(strconv.Itoa(i)), []byte("x"))
+		inMemoryStore.Set(
+			kv.KV{
+				Key:   []byte(strconv.Itoa(i)),
+				Value: []byte("x"),
+			},
+		)
 	}
 }
 
@@ -112,6 +129,6 @@ func BenchmarkSetKV(b *testing.B) {
 			Value: []byte("x"),
 		}
 
-		inMemoryStore.SetKV(kv)
+		inMemoryStore.Set(kv)
 	}
 }

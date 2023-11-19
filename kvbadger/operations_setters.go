@@ -8,18 +8,13 @@ import (
 	badger "github.com/dgraph-io/badger/v4"
 )
 
-func (s *KVStore) Set(key, value []byte) error {
+func (s *KVStore) Set(value kv.KV) error {
 	return s.Store.
 		Update(
 			func(txn *badger.Txn) error {
-				return txn.Set(key, value)
+				return txn.Set(value.Key, value.Value)
 			},
 		)
-}
-
-// SetKV sets or updates a key value in store.
-func (s *KVStore) SetKV(kv kv.KV) error {
-	return s.Set(kv.Key, kv.Value)
 }
 
 // SetAny sets or updates key in store.
@@ -29,17 +24,22 @@ func (s *KVStore) SetAny(key []byte, value any) error {
 		return errEncode
 	}
 
-	return s.Set(key, encodedValue)
+	return s.Set(
+		kv.KV{
+			Key:   key,
+			Value: encodedValue,
+		},
+	)
 }
 
 // SetTTL can be used for inserts and updates.
-func (s *KVStore) SetTTL(key, value []byte, secondsTTL uint) error {
+func (s *KVStore) SetTTL(value kv.KV, secondsTTL uint) error {
 	return s.Store.
 		Update(
 			func(txn *badger.Txn) error {
 				return txn.
 					SetEntry(
-						badger.NewEntry(key, value).
+						badger.NewEntry(value.Key, value.Value).
 							WithTTL(time.Second * time.Duration(secondsTTL)),
 					)
 			})
@@ -52,5 +52,12 @@ func (s *KVStore) SetAnyTTL(key []byte, value any, secondsTTL uint) error {
 		return errEncode
 	}
 
-	return s.SetTTL(key, encodedValue, secondsTTL)
+	return s.SetTTL(
+		kv.KV{
+			Key:   key,
+			Value: encodedValue,
+		},
+
+		secondsTTL,
+	)
 }

@@ -3,6 +3,7 @@ package kvbadger
 import (
 	"testing"
 
+	"github.com/TudorHulban/kv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,10 @@ func TestDelete(t *testing.T) {
 	value := []byte("y")
 
 	assert.NoError(t,
-		inMemoryStore.Set(key, value),
+		inMemoryStore.Set(kv.KV{
+			Key:   key,
+			Value: value,
+		}),
 	)
 
 	value0, errGet0 := inMemoryStore.GetValueFor(key)

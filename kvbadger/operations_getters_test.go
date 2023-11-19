@@ -24,7 +24,7 @@ func TestGetByPrefix(t *testing.T) {
 		Value: []byte("y0"),
 	}
 	assert.NoError(t,
-		inMemoryStore.SetKV(kv0),
+		inMemoryStore.Set(kv0),
 	)
 
 	var wg sync.WaitGroup
@@ -37,7 +37,7 @@ func TestGetByPrefix(t *testing.T) {
 		}
 
 		assert.NoError(t,
-			inMemoryStore.SetKV(kv1),
+			inMemoryStore.Set(kv1),
 		)
 
 		wg.Done()
@@ -50,7 +50,7 @@ func TestGetByPrefix(t *testing.T) {
 		}
 
 		assert.NoError(t,
-			inMemoryStore.SetKV(kv2),
+			inMemoryStore.Set(kv2),
 		)
 
 		wg.Done()
