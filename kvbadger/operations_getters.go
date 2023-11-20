@@ -6,7 +6,7 @@ import (
 	badger "github.com/dgraph-io/badger/v4"
 )
 
-func (s *KVStore) GetValueFor(key []byte) ([]byte, error) {
+func (s *KVStore) GetValueFor(_ string, key []byte) ([]byte, error) {
 	var res []byte
 
 	errView := s.Store.
@@ -35,12 +35,12 @@ func (s *KVStore) GetValueFor(key []byte) ([]byte, error) {
 	return res, errView
 }
 
-func (s *KVStore) GetAnyByK(key []byte, result any) error {
+func (s *KVStore) GetAnyByK(_ string, key []byte, result any) error {
 	if helpers.CheckItemsArePointers(result) != -1 {
 		return ErrNotAPointerType{}
 	}
 
-	encodedValue, errGet := s.GetValueFor(key)
+	encodedValue, errGet := s.GetValueFor("", key)
 	if errGet != nil {
 		return errGet
 	}

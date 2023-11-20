@@ -18,21 +18,23 @@ func TestDelete(t *testing.T) {
 	value := []byte("y")
 
 	assert.NoError(t,
-		inMemoryStore.Set(kv.KV{
-			Key:   key,
-			Value: value,
-		}),
+		inMemoryStore.Set("",
+			kv.KV{
+				Key:   key,
+				Value: value,
+			},
+		),
 	)
 
-	value0, errGet0 := inMemoryStore.GetValueFor(key)
+	value0, errGet0 := inMemoryStore.GetValueFor("", key)
 	assert.NoError(t, errGet0)
 	assert.Equal(t, value0, value)
 
 	assert.NoError(t,
-		inMemoryStore.DeleteKVBy(key),
+		inMemoryStore.DeleteKVBy("", key),
 	)
 
-	value1, errGet1 := inMemoryStore.GetValueFor(key)
+	value1, errGet1 := inMemoryStore.GetValueFor("", key)
 	assert.Error(t, errGet1)
 	assert.Zero(t, value1)
 }

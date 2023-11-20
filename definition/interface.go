@@ -3,23 +3,24 @@ package definition
 import (
 	"github.com/TudorHulban/kv"
 	"github.com/TudorHulban/kv/kvbadger"
+	kvnuts "github.com/TudorHulban/kv/kvnutsdb"
 )
 
 type KVStore interface {
-	Set(kv.KV) error
-	SetTTL(value kv.KV, secondsTTL uint) error
-	SetAny([]byte, any) error
-	SetAnyTTL(key []byte, value any, secondsTTL uint) error
+	Set(bucket string, item kv.KV) error
+	SetTTL(bucket string, value kv.KV, secondsTTL uint) error
+	SetAny(bucket string, key []byte, value any) error
+	SetAnyTTL(bucket string, key []byte, value any, secondsTTL uint) error
 
-	GetValueFor(key []byte) ([]byte, error)
-	GetAnyByK([]byte, interface{}) error
+	GetValueFor(bucket string, key []byte) ([]byte, error)
+	GetAnyByK(bucket string, key []byte, result any) error
 	GetKVByPrefix(keyPrefix []byte) ([]*kv.KV, error)
 
-	DeleteKVBy([]byte) error
+	DeleteKVBy(bucket string, key []byte) error
 
 	Close() error
 }
 
 var _ KVStore = &kvbadger.KVStore{}
 
-// var _ KVStore = kvnuts.KVStore{}
+var _ KVStore = &kvnuts.KVStore{}

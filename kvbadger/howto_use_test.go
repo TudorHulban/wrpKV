@@ -15,12 +15,17 @@ func TestHowToUse(t *testing.T) {
 	key := []byte("x")
 	value := []byte("y")
 
-	require.NoError(t, inMemoryStore.Set(kv.KV{
-		Key:   key,
-		Value: value,
-	}))
+	require.NoError(t,
+		inMemoryStore.Set(
+			"",
+			kv.KV{
+				Key:   key,
+				Value: value,
+			},
+		),
+	)
 
-	fetchedValue, errGet := inMemoryStore.GetValueFor(key)
+	fetchedValue, errGet := inMemoryStore.GetValueFor("", key)
 	require.NoError(t, errGet)
 	require.Equal(t, fetchedValue, []byte(value))
 }

@@ -1,9 +1,12 @@
 package kvnuts
 
-import "github.com/nutsdb/nutsdb"
+import (
+	"github.com/TudorHulban/kv/helpers"
+	"github.com/nutsdb/nutsdb"
+)
 
 // GetValueByKey fetches value from store based on passed key.
-func (s *KVStore) GetValueByKey(bucket string, key []byte) ([]byte, error) {
+func (s *KVStore) GetValueFor(bucket string, key []byte) ([]byte, error) {
 	var res []byte
 
 	errView := s.Store.
@@ -21,4 +24,17 @@ func (s *KVStore) GetValueByKey(bucket string, key []byte) ([]byte, error) {
 		)
 
 	return res, errView
+}
+
+func (s *KVStore) GetAnyByK(bucket string, key []byte, result any) error {
+	if helpers.CheckItemsArePointers(result) != -1 {
+		return ErrNotAPointerType{}
+	}
+
+	encodedValue, errGet := s.GetValueFor(bucket, key)
+	if errGet != nil {
+		return errGet
+	}
+
+	return helpers.Decode([]byte(encodedValue), result)
 }

@@ -15,10 +15,9 @@ type KV struct {
 
 type KVStore struct {
 	Store *nutsdb.DB
-}
 
-const _folderDB = "./nutsdb"
-const _segmentSizeTests = 4 * 1024 * 1024 // 4 MB
+	bucket string
+}
 
 // NewStoreInMemory returns a type containing a store that satisfies store interface.
 // With test segment size.
@@ -51,7 +50,8 @@ func NewStore(mbSegmentSize uint) (*KVStore, error) {
 	)
 	if errOpen != nil {
 		return nil,
-			fmt.Errorf("could not create database in folder: %s, %w", _folderDB, errOpen)
+			fmt.Errorf("could not create database in folder: %s, %w",
+				_folderDB, errOpen)
 	}
 
 	return &KVStore{
