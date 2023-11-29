@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/TudorHulban/kv/definition"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,4 +16,9 @@ func TestGetByPrefix(t *testing.T) {
 	store, errCr = NewStoreInMemory(_segmentSizeTests)
 	require.NoError(t, errCr)
 	require.NotZero(t, store)
+
+	defer func() {
+		assert.NoError(t,
+			store.Close())
+	}()
 }

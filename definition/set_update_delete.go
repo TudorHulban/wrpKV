@@ -1,35 +1,14 @@
-package kvnuts
+package definition
 
 import (
 	"testing"
 
 	"github.com/TudorHulban/kv"
-	"github.com/TudorHulban/kv/definition"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMemory_SetUpdateDelete(t *testing.T) {
-	store, errNewStore := NewStoreInMemory(_segmentSizeTests)
-	require.NoError(t, errNewStore)
-
-	defer func() {
-		assert.NoError(t,
-			store.Close())
-	}()
-
-	definition.SetUpdateDeleteTest(t, store)
-}
-
-func TestDiskSetUpdateDelete(t *testing.T) {
-	store, err := NewStore(_segmentSizeTests)
-	require.NoError(t, err)
-
-	defer func() {
-		assert.NoError(t,
-			store.Close())
-	}()
-
+func SetUpdateDeleteTest(t *testing.T, store KVStore) {
 	key := []byte("x")
 	value := []byte("y")
 	bucket := "A"
@@ -44,12 +23,15 @@ func TestDiskSetUpdateDelete(t *testing.T) {
 		),
 	)
 
-	fetchedValue1, errGetExistentValue := store.GetValueFor(bucket, key)
-	assert.NoError(t, errGetExistentValue)
+	fetchedValue0, errGetNonExistentKey := store.GetValueFor(bucket, value)
+	assert.Error(t, errGetNonExistentKey)
+	assert.Empty(t, fetchedValue0)
+
+	fetchedValue1, errGetExistentKey := store.GetValueFor(bucket, key)
+	assert.NoError(t, errGetExistentKey)
 	assert.Equal(t, value, fetchedValue1)
 
 	updateValue := []byte("z")
-
 	assert.NoError(t,
 		store.Set(
 			bucket,
