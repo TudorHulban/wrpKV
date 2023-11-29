@@ -10,27 +10,30 @@ func (s *KVStore) GetValueFor(_ string, key []byte) ([]byte, error) {
 	var res []byte
 
 	errView := s.Store.
-		View(func(txn *badger.Txn) error {
-			value, errGet := txn.Get([]byte(key))
-			if errGet != nil {
-				return errGet
-			}
-
-			go func() {
-				if s.logger != nil {
-					s.logger.
-						Debugf("size: %v, expires: %v",
-							value.EstimatedSize(), value.ExpiresAt())
+		View(
+			func(txn *badger.Txn) error {
+				value, errGet := txn.Get([]byte(key))
+				if errGet != nil {
+					return errGet
 				}
-			}()
 
-			return value.Value(
-				func(itemVals []byte) error {
-					res = append(res, itemVals...)
+				go func() {
+					if s.logger != nil {
+						s.logger.
+							Debugf("size: %v, expires: %v",
+								value.EstimatedSize(), value.ExpiresAt())
+					}
+				}()
 
-					return nil
-				})
-		})
+				return value.Value(
+					func(itemVals []byte) error {
+						res = append(res, itemVals...)
+
+						return nil
+					},
+				)
+			},
+		)
 
 	return res, errView
 }
@@ -48,46 +51,51 @@ func (s *KVStore) GetAnyByK(_ string, key []byte, result any) error {
 	return helpers.Decode([]byte(encodedValue), result)
 }
 
-func (s *KVStore) GetKVByPrefix(keyPrefix []byte) ([]*kv.KV, error) {
+func (s *KVStore) GetKVByPrefix(_ string, keyPrefix []byte) ([]*kv.KV, error) {
 	var result []*kv.KV
 
 	errView := s.Store.
-		View(func(txn *badger.Txn) error {
-			options := badger.DefaultIteratorOptions
-			options.PrefetchSize = 10
+		View(
+			func(txn *badger.Txn) error {
+				options := badger.DefaultIteratorOptions
+				options.PrefetchSize = 10
 
-			iterator := txn.NewIterator(options)
-			defer iterator.Close()
+				iterator := txn.NewIterator(options)
+				defer iterator.Close()
 
-			var errItem error
+				var errItem error
 
-			for iterator.Seek(keyPrefix); iterator.ValidForPrefix(keyPrefix); iterator.Next() {
-				item := iterator.Item()
-				itemKey := item.Key()
+				for iterator.Seek(keyPrefix); iterator.ValidForPrefix(keyPrefix); iterator.Next() {
+					item := iterator.Item()
+					itemKey := item.Key()
 
-				errItem = item.Value(
-					func(itemValue []byte) error {
-						go func() {
-							if s.logger != nil {
-								s.logger.Debugf("key=%s, value=%s", itemKey, itemValue)
-							}
-						}()
+					errItem = item.Value(
+						func(itemValue []byte) error {
+							go func() {
+								if s.logger != nil {
+									s.logger.Debugf("key=%s, value=%s", itemKey, itemValue)
+								}
+							}()
 
-						result = append(result, &kv.KV{
-							Key:   itemKey,
-							Value: itemValue,
-						})
+							result = append(result,
+								&kv.KV{
+									Key:   itemKey,
+									Value: itemValue,
+								},
+							)
 
-						return nil
-					})
+							return nil
+						},
+					)
 
-				if errItem != nil {
-					return errItem
+					if errItem != nil {
+						return errItem
+					}
 				}
-			}
 
-			return nil
-		})
+				return nil
+			},
+		)
 
 	return result, errView
 }

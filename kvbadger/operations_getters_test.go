@@ -1,6 +1,7 @@
 package kvbadger
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 
@@ -58,12 +59,23 @@ func TestGetByPrefix(t *testing.T) {
 
 	wg.Wait()
 
-	fetchedKeyValues, errGet := inMemoryStore.GetKVByPrefix([]byte(kPrefix))
+	reconstructedExistingPrefix, errGet := inMemoryStore.GetKVByPrefix(
+		"",
+		[]byte(kPrefix),
+	)
 	assert.NoError(t, errGet)
-	assert.Equal(t, len(fetchedKeyValues), 3)
-	assert.Contains(t, fetchedKeyValues, kv0)
+	assert.Len(t, reconstructedExistingPrefix, 3)
+	assert.EqualValues(t,
+		reconstructedExistingPrefix[0].Key,
+		kv0.Key,
 
-	badPrefix, errBadPrefix := inMemoryStore.GetKVByPrefix([]byte("xxxxxxxxxx"))
+		fmt.Sprint(reconstructedExistingPrefix[0]),
+	)
+
+	reconstructedNonExistingPrefix, errBadPrefix := inMemoryStore.GetKVByPrefix(
+		"",
+		[]byte("xxxxxxxxxx"),
+	)
 	assert.NoError(t, errBadPrefix)
-	assert.Equal(t, 0, len(badPrefix))
+	assert.Zero(t, reconstructedNonExistingPrefix)
 }

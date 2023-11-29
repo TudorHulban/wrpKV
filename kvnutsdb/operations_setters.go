@@ -36,3 +36,11 @@ func (s *KVStore) SetAny(bucket string, key []byte, value any) error {
 		},
 	)
 }
+
+func (s *KVStore) SetTTL(bucket string, value kv.KV, secondsTTL uint) error {
+	return nil
+}
+
+func (s *KVStore) SetAnyTTL(bucket string, key []byte, value any, secondsTTL uint) error {
+	return nil
+}

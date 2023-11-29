@@ -2,8 +2,6 @@ package definition
 
 import (
 	"github.com/TudorHulban/kv"
-	"github.com/TudorHulban/kv/kvbadger"
-	kvnuts "github.com/TudorHulban/kv/kvnutsdb"
 )
 
 type KVStore interface {
@@ -14,13 +12,9 @@ type KVStore interface {
 
 	GetValueFor(bucket string, key []byte) ([]byte, error)
 	GetAnyByK(bucket string, key []byte, result any) error
-	GetKVByPrefix(keyPrefix []byte) ([]*kv.KV, error)
+	GetKVByPrefix(bucket string, keyPrefix []byte) ([]*kv.KV, error)
 
 	DeleteKVBy(bucket string, key []byte) error
 
 	Close() error
 }
-
-var _ KVStore = &kvbadger.KVStore{}
-
-var _ KVStore = &kvnuts.KVStore{}
