@@ -33,8 +33,8 @@ require (
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	go.opencensus.io v0.22.5 // indirect
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0 // indirect
 )
